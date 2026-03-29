@@ -97,14 +97,64 @@
         }
 
         /* スマホ対応 */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                display: none; /* スマホではサイドバーを隠すか、上部に配置 */
-            }
-        }
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr; /* スマホでは1列 */
+        padding: 0; /* 余白をなくす */
+    }
+    
+    .main-form {
+        padding: 1rem; /* フォームの余白を調整 */
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; /* 画面に固定 */
+        top: 0;
+        left: 0;
+        width: 280px; /* サイドバーの幅 */
+        height: 100vh; /* 画面いっぱいの高さ */
+        margin: 0;
+        padding: 0;
+        transform: translateX(-100%); /* 普段は画面左外に隠す */
+        background: var(--card-bg);
+        border-radius: 0;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+    }
+    
+    /* サイドバーが開いている時の状態 */
+    .sidebar.open {
+        transform: translateX(0); /* 画面内にスライドさせる */
+    }
+    
+    /* サイドバーの中身のコンテナ（スクロール用） */
+    .sidebar-content {
+        height: 100%;
+        overflow-y: auto; /* サイドバー内が長ければスクロール */
+        padding: 1rem;
+        padding-top: 60px; /* 開閉ボタンとかぶらないように余白 */
+    }
+    
+    /* オーバーレイ（背景の暗幕） */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 50; /* ★サイドバー(100)より低く、メイン画面より高い値 */
+    }
+    
+    .sidebar.open .sidebar-overlay {
+        display: block;
+    }
+    .sidebar.open ~ .sidebar-overlay, /* 隣接要素の場合 */
+    .sidebar-overlay.active { 
+        display: block;
+    }
+}
 
         .status-grid {
         display: grid;
@@ -361,15 +411,76 @@ input:focus {
     display: none; /* 完全に非表示 */
 }
 
+.sidebar {
+    /* デスクトップ表示時の基本スタイル（以前のものを継承） */
+    transition: transform 0.3s ease-in-out; /* スライドアニメーション */
+    z-index: 100; /* ヘッダーより上に表示 */
+}
+/* --- モバイル用ボタンの設定（全サイズ共通のベース） --- */
+.sidebar-toggle-btn {
+    display: none; /* ★まず基本（PC版など）は非表示にする */
+    position: fixed;
+    top: 8px;
+    left: 15px;
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    
+    /* アイコンの中身を中央寄せにする設定 */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+@media (max-width: 768px) {
+    .sidebar-toggle-btn {
+        display: flex; /* スマホでは表示 */
+    }
+    
+    .sidebar-toggle-btn span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--primary-bg); /* 三本線の色 */
+        border-radius: 1px;
+        transition: all 0.3s;
+    }
+}
+
+/* ボタンをクリックした時のアニメーション（三本線が「×」になる） */
+.sidebar-toggle-btn.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.sidebar-toggle-btn.active span:nth-child(2) {
+    opacity: 0; /* 真ん中の線は消す */
+}
+.sidebar-toggle-btn.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
     </style>
 </head>
 <body>
+<button id="sidebar-toggle" class="sidebar-toggle-btn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <header>TRPGキャラシエディター</header>
 
 <div class="container">
-    <aside class="sidebar">
-        <div class="section-title">Current Status</div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-content">
+            <div class="section-title">Current Status</div>
         
         <div class="status-indicator-box">
             <div class="status-label-row">
@@ -426,6 +537,7 @@ input:focus {
             <div class="status-label-row" style="margin-top: 10px;">
                 <span class="status-label">興味技能ポイント残</span>
                 <span id="interest-pts-left" class="status-val" style="font-size: 1.1rem;">0</span>
+            </div>
             </div>
         </div>
     </aside>
@@ -1098,6 +1210,35 @@ window.onload = () => {
         addInventoryRow(); // 初期行を追加
     }
 };
+
+// サイドバーの開閉を制御する関数（モバイル用）
+const toggleSidebar = () => {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const overlay = document.getElementById('sidebar-overlay'); // ★追加
+    
+    sidebar.classList.toggle('open');
+    toggleBtn.classList.toggle('active');
+    
+    // オーバーレイの表示切り替え（display: blockにするためクラスを制御）
+    if (sidebar.classList.contains('open')) {
+        overlay.style.display = 'block';
+    } else {
+        overlay.style.display = 'none';
+    }
+};
+
+// 開閉ボタンにクリックイベントを設定
+document.getElementById('sidebar-toggle').addEventListener('click', toggleSidebar);
+
+// 画面サイズが変更された時、モバイル表示からデスクトップ表示に戻ったら、
+// サイドバーが開いたままにならないようにクラスを削除
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebar-toggle').classList.remove('active');
+    }
+});
 </script>
 </body>
 </html>
