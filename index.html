@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Sheet Builder</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#89b4fa">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         :root {
             --primary-bg: #1e1e2e;
@@ -1267,6 +1271,16 @@ window.addEventListener('resize', () => {
         document.getElementById('sidebar-toggle').classList.remove('active');
     }
 });
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('SW registered!', reg))
+        .catch(err => console.err('SW registration failed!', err));
+    });
+  }
 </script>
 </body>
 </html>

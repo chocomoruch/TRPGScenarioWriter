@@ -1,7 +1,7 @@
 const CACHE_NAME = 'coc-editor-v1';
 const ASSETS = [
   './',
-  './CharacterSheet.html',
+  './index.html',
   './manifest.json'
 ];
 
