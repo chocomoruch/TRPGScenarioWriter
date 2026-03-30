@@ -733,12 +733,41 @@ const rollDice = (n, m) => {
 };
 
 const defaultSkills = [
-    { name: "回避", base: "dex*2" }, { name: "キック", base: 25 }, { name: "組み付き", base: 25 },
-    { name: "こぶし", base: 50 }, { name: "応急手当", base: 30 }, { name: "鍵開け", base: 1 },
-    { name: "隠れる", base: 10 }, { name: "聞き耳", base: 25 }, { name: "忍び歩き", base: 10 },
-    { name: "写真術", base: 10 }, { name: "図書館", base: 25 }, { name: "目星", base: 25 },
-    { name: "運転", base: 20 }, { name: "説得", base: 15 }, { name: "値切り", base: 5 },
-    { name: "心理学", base: 5 }, { name: "精神分析", base: 1 }
+    { name: "回避", base: "dex*2", cat: "戦闘" }, { name: "キック", base: 25, cat: "戦闘" },
+    { name: "組み付き", base: 25, cat: "戦闘" }, { name: "こぶし", base: 50, cat: "戦闘" },
+    { name: "頭突き", base: 10, cat: "戦闘" }, { name: "投擲", base: 25, cat: "戦闘" },
+    { name: "マーシャルアーツ", base: 1, cat: "戦闘" }, { name: "拳銃", base: 20, cat: "射撃" },
+    { name: "サブマシンガン", base: 15, cat: "射撃" }, { name: "ショットガン", base: 30, cat: "射撃" },
+    { name: "マシンガン", base: 15, cat: "射撃" }, { name: "ライフル", base: 25, cat: "射撃" },
+    
+    { name: "応急手当", base: 30, cat: "探索" }, { name: "鍵開け", base: 1, cat: "探索" },
+    { name: "隠す", base: 15, cat: "探索" }, { name: "隠れる", base: 10, cat: "探索" },
+    { name: "聞き耳", base: 25, cat: "探索" }, { name: "忍び歩き", base: 10, cat: "探索" },
+    { name: "写真術", base: 10, cat: "探索" }, { name: "精神分析", base: 1, cat: "探索" },
+    { name: "追跡", base: 10, cat: "探索" }, { name: "登攀", base: 40, cat: "探索" },
+    { name: "図書館", base: 25, cat: "探索" }, { name: "目星", base: 25, cat: "探索" },
+    
+    { name: "運転", base: 20, cat: "行動" }, { name: "機械修理", base: 20, cat: "行動" },
+    { name: "重機械操作", base: 1, cat: "行動" }, { name: "乗馬", base: 5, cat: "行動" },
+    { name: "水泳", base: 25, cat: "行動" }, { name: "製作", base: 5, cat: "行動" },
+    { name: "操縦", base: 1, cat: "行動" }, { name: "跳躍", base: 25, cat: "行動" },
+    { name: "電気修理", base: 10, cat: "行動" }, { name: "変装", base: 10, cat: "行動" },
+    { name: "変装", base: 1, cat: "行動" },
+    
+    { name: "言いくるめ", base: 5, cat: "交渉" }, { name: "信用", base: 15, cat: "交渉" },
+    { name: "説得", base: 15, cat: "交渉" }, { name: "値切り", base: 5, cat: "交渉" },
+    { name: "母国語", base: "edu*5", cat: "交渉" },
+    
+    { name: "医学", base: 5, cat: "知識" }, { name: "オカルト", base: 5, cat: "知識" },
+    { name: "化学", base: 1, cat: "知識" }, { name: "クトゥルフ神話", base: 0, cat: "知識" },
+    { name: "芸術", base: 5, cat: "知識" }, { name: "経理", base: 10, cat: "知識" },
+    { name: "考古学", base: 1, cat: "知識" }, { name: "コンピューター", base: 1, cat: "知識" },
+    { name: "心理学", base: 5, cat: "知識" }, { name: "人類学", base: 1, cat: "知識" },
+    { name: "生物学", base: 1, cat: "知識" }, { name: "地質学", base: 1, cat: "知識" },
+    { name: "電子工学", base: 1, cat: "知識" }, { name: "天文学", base: 1, cat: "知識" },
+    { name: "博物学", base: 10, cat: "知識" }, { name: "物理学", base: 1, cat: "知識" },
+    { name: "法律", base: 5, cat: "知識" }, { name: "薬学", base: 1, cat: "知識" },
+    { name: "歴史", base: 20, cat: "知識" }
 ];
 
 // ダメージボーナス (DB) 計算ロジック
